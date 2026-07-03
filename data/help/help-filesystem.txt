@@ -1,0 +1,21 @@
+<h1>Makehuman2 File System</h1>
+<p>
+Makehuman uses two locations to read or write data. The system location, which is where the program is installed and
+a user location which can be changed in preferences (a later change will demand to move the data as well).
+Both locations are checked, when files need to be loaded. User location is checked before system location, so it is possible to
+replace files.
+<p>
+The data is organized in different asset categories (like clothes and hair), then a mesh sub-directory is the next layer, except for those cases,
+where the mesh does not make sense.
+<p>
+<h1>Directories:</h1>
+<p>
+<img src="data/help/filesystem.png">
+<h2>Base meshes in User Space</h2>
+<p>
+To achieve higher flexibility and to add user created base meshes including own targets, it is also possible to do that in user space.
+<p>
+In this case the targets and all JSON files (target_cat.json, modelling.json) must be created manually in <b>contarget</b> folder (used for "constant targets").
+This folder will be used instead of system target folder, which will be ignored then.
+Additional targets then should be placed in the normal user target folder,
+since a modelling.json file in that folder is generated automatically and would overwrite any manually created file.

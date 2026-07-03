@@ -1,0 +1,14 @@
+# MakeHuman2 Model File
+version v2.0.1
+name base
+modifier macrodetails/Gender 0.5
+modifier macrodetails/Age 0.5
+modifier macrodetails-universal/Muscle 0.5
+modifier macrodetails-universal/Weight 0.5
+modifier macrodetails-height/Height 0.5
+modifier macrodetails-proportions/BodyProportions 0.5
+modifier breast/BreastFirmness 0.5
+modifier breast/BreastSize 0.5
+skinMaterial skins/default.mhmat
+eyes HighPolyEyes 2c12f43b-1303-432c-b7ce-d78346baf2e6
+material HighPolyEyes 2c12f43b-1303-432c-b7ce-d78346baf2e6 eyes/materials/brown.mhmat

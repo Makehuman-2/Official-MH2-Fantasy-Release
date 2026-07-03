@@ -1,0 +1,32 @@
+<h1>Change material of the Basemesh</h1>
+
+This context provides a possibility to change the material (skin) of the base mesh.
+
+<p>
+<h3>Filtering</h3>
+
+To select a skin material, you can use a filter with some predefined values, like gender, era and genre.
+As long as the materials are tagged with these attributes, they will be shown.
+Materials with no attributes are always shown. You can:
+<ul>
+<li>select from the attributes</li>
+<li>click on a filter icon</li>
+<li>or enter a text in the filter box</li>
+</ul>
+<p>
+<h3>Filter icons, left side:</h3>
+<p>
+<table style="background-color:#c0c0c0;color:#000000;vertical-align:middle;">
+<tr><td><img src="data/icons/male.png"></td><td>Display all male materials. Materials without gender are also displayed.</td></tr>
+<tr><td><img src="data/icons/female.png"></td><td>Display all female materials. Materials without gender are also displayed.</td></tr>
+<tr><td><img src="data/icons/sweep.png"></td><td>Reset all filters, all materials are shown on right side.</td></tr>
+</table>
+<p>
+<table style="background-color:#c0c0c0;color:#000000;border:2;vertical-align:middle;">
+<tr><td><img src="data/icons/use.png"></td><td>Use the <b>selected</b> material. Can only be used if a material is selected.</td></tr>
+<tr><td><img src="data/icons/information.png"></td><td>Change the information of the <b>selected</b> material.</td></tr>
+<tr><td><img src="data/icons/materials.png"></td><td>Change the material setup of the <b>selected</b> material.</td></tr>
+<tr><td><img src="data/icons/resize.png"></td><td>Resíze the icons on right side. Size changes between 48, 64, 96 and 128 pixel.</td></tr>
+<tr><td><img src="data/icons/rescan.png"></td><td>Reload the skins folder. This is needed if you add a skin after makehuman was started.</td></tr>
+</table>
+<p>

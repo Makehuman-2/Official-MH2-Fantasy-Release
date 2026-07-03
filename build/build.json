@@ -1,0 +1,58 @@
+{
+	"ppadir": "ppa-work",
+	"linux-dependencies": [
+		"python3",
+		"python3-opengl",
+		"python3-pyside6.qtwidgets",
+		"python3-pyside6.qtopengl",
+		"python3-pyside6.qtopenglwidgets",
+		"python3-numpy",
+		"python3-psutil"
+	],
+	"ppa-control-desc": "../data/help/help-description.txt",
+	"ppa-replaces": null,
+	"ppa-destdir": "/usr/share",
+	"ppa-logo": "makehuman2/data/icons/makehuman2logo128.png",
+	"ppa-desktopstarter": "applications/MakeHuman2.desktop",
+	"makehuman2start": "/usr/bin/makehuman2",
+	"pyinstdir": "pyinstaller",
+	"ignorepyinstdirs": [ "__pycache__", "build", "^\\..*", "extern", "data", "docu" ],
+	"pynsistdir": "pynsist-work",
+	"pynsistfile": "pynsist.cfg",
+	"exename": "MakeHuman2",
+	"mhconfigfile": "../data/makehuman2_version.json",
+	"reponame": "makehuman2",
+	"remove_ascii_targets": true,
+	"remove_ascii_meshes": true,
+	"ignoredirs": [ "__pycache__", "build", "^\\..*" ],
+	"ignorefiles": [ ".*\\.pyc", "^\\..*", ".*\\.mhbin", ".*\\.npz" ],
+	"pynsist": {
+		"Application": {
+			"name": "TITLE",
+			"version": "VERSION",
+			"publisher": "PUBLISHER",
+			"script": "winstart.py",
+			"license_file": "../data/licenses/makehuman_license.txt",
+			"icon": "../data/icons/makehuman2logo.ico"
+		},
+		"Python": {
+			"version": "3.9.13",
+			"bitness": 64,
+			"format": "bundled"
+		},
+		"Include": {
+			"packages": [
+				"OpenGL"
+			],
+			"pypi_wheels": {
+				"PySide6": "6.2.4",
+				"shiboken6": "6.2.4",
+				"numpy": "1.24.0",
+				"psutil": "5.9.0"
+			},
+			"files": [
+				"_REPODIR_"
+			]
+		}
+	}
+}

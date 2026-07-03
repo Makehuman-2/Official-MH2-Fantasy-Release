@@ -1,0 +1,403 @@
+"""
+    License information: data/licenses/makehuman_license.txt
+    Author: black-punkduck
+
+    Classes:
+    * AssetPack
+    * TargetASCII
+"""
+
+import urllib.request
+from zipfile import ZipFile
+from datetime import datetime
+import numpy as np
+import os
+import re
+import shutil
+import tempfile
+
+class AssetPack():
+    def __init__(self):
+        self.unzipdir = None
+        self.acceptedfiles = ["obj", "mhclo", "mhmat", "thumb", "mhw_file", "diffuse", "normals",
+                "mhpose", "meta", "bvh", "mhskel", "mhw", "obj_file", "file", "mhm" ]
+
+    def titleToFileName(self, title):
+        fname = re.sub('[^a-z0-9 ]', '', title.lower()).strip()
+        fname = fname.replace(" ", "_")
+        return re.sub('__+', '_', fname)
+
+    def createMaterialsFolder(self, path):
+        #
+        # if material folder is already selected return path itself
+        #
+        if path.endswith("materials"):
+            return path, "Okay"
+        matfolder = os.path.join(path, "materials")
+        if not os.path.isdir(matfolder):
+            try:
+                os.mkdir(matfolder)
+            except:
+                return None, "Problems creating new folder: " + matfolder
+        return matfolder, "Okay"
+
+    def testAssetList(self, path):
+        if os.path.isfile(path):
+            return datetime.fromtimestamp(os.path.getctime(path)).strftime("%d/%m/%y %H:%M")
+        else:
+            return None
+
+    def alistReadJSON(self, env, path):
+        json = env.readJSON(path)
+        if json is not None:
+            for key, item in json.items():
+                folder = self.titleToFileName(item.get("title"))
+                if len(folder) == 0:
+                    folder = key
+
+                cat = item.get("category")
+                if item["type"] == "target":        # targets need a hint for category
+                    cat = self.titleToFileName(cat)
+                    item["folder"] = cat + "/" + folder
+                else:
+                    if cat == "Hair":
+                        item["type"] = "hair"
+                    elif cat == "Eyes":
+                        item["type"] = "eyes"
+                    elif cat == "Eyebrows":
+                        item["type"] = "eyebrows"
+                    elif cat == "Eyelashes":
+                        item["type"] = "eyelashes"
+                    elif cat == "Teeth":
+                        item["type"] = "teeth"
+
+                    item["folder"] = folder
+
+        return json
+
+    def alistGetFiles(self, json, key):
+        """
+        create a file list of accepted files (used for single asset download)
+
+        :param json: JSON object
+        :param key: selected item
+        :return: type and list of files
+        """
+        flist = []
+        item = json[key]
+        mtype = item.get("type")
+        if "files" in item:
+            for fkey, fname in item["files"].items():
+                if fkey in self.acceptedfiles:
+                    flist.append(fname)
+            return mtype, flist
+        else:
+            return None, []
+
+    def alistCreateFolderFromTitle(self, path, base, mtype, title):
+        if mtype == "expression" or mtype == "pose" or mtype == "model":
+            # no subfolder, but name is plural
+            #
+            folder =os.path.join(path, mtype+"s", base)
+            return folder, "Okay"
+
+        elif mtype == "skin" or mtype == "rig":
+            # folder name is plural
+            folder =os.path.join(path, mtype+"s", base, title)
+        elif mtype == "target":
+            # sub folder is part of the name, return if available
+            sub = title.split("/")[0]
+            folder =os.path.join(path, mtype, base, sub)
+            if os.path.isdir(folder):
+                return folder, "Okay"
+        else:
+            # proxy and all type of clothes
+            folder =os.path.join(path, mtype, base, title)
+
+        # subfolder needed
+        #
+        if os.path.isdir(folder) and  mtype != "target":
+            return None, "Destination folder already existent: " + folder
+        try:
+            os.mkdir(folder)
+        except:
+            return None, "Problems creating new folder: " + folder
+        return folder, "Okay"
+
+    def getAssetPack(self, url, save_path, filename, unzip=False, responsefunc=None):
+        """
+        get URL and extract zipfile if unzip is set to True, otherwise read normal file
+
+        :param str url: name of the URL to load
+        :param str save_path: path where the asset should be loaded
+        :param str filename: filename of the asset if give otherwise save_path is used
+        ;paran bool unzip: should pack be unzipped?
+        :param responsefunc: a function called (totalsize, bytesread) used to display progress or None
+        :return: bool True if loaded and err or None
+        """
+        url = url.replace(' ', '%20')
+
+        try:
+            request = urllib.request.Request(url)
+        except Exception as err:
+            return False, str(err)
+
+        try:
+            response = urllib.request.urlopen(request)
+        except Exception as err:
+            return False, str(err)
+
+        meta = response.info()
+        total_size = int(meta.get("content-length", 0))
+        # print ("Total size is: ", total_size)
+
+        outpath = os.path.join(save_path, filename) if filename else save_path
+
+        chunk_size = 8192
+        l = 0
+        try:
+            with open(outpath, "wb") as ofile:
+                 while True:
+                    data = response.read(chunk_size)
+                    if len(data) < 1:
+                        break
+                    l += len(data)
+                    if responsefunc is not None:
+                        responsefunc (total_size, l)
+                    ofile.write(data)
+
+        except Exception as err:
+            return False, str(err)
+
+        if total_size != 0 and l < total_size:
+            print ("Download failed", l, total_size)
+            return False, "Download failed, bytes read: " + str(l) + " from " + str(total_size)
+
+        if unzip:
+            with ZipFile(outpath, "r") as zfile:
+                zfile.extractall(self.unzipdir)
+        return True, None
+
+    def getUrlFile(self, url, destination, responsefunc=None):
+        return self.getAssetPack(url, destination, None, unzip=False, responsefunc=responsefunc)
+
+    def tempDir(self):
+        self.unzipdir = tempfile.mkdtemp(prefix="mh_")
+        return self.unzipdir
+
+    def unZip(self, zipfile):
+        """
+        unzip a file into a temporary folder
+
+        :param str zipfile: name of the zip-file
+        :return: zip-directory, error [str, None]
+        """
+        if not os.path.isfile(zipfile):
+            return None, zipfile + " not found!"
+
+        self.tempDir()
+        try:
+            with ZipFile(zipfile,"r") as zip_ref:
+                zip_ref.extractall(self.unzipdir)
+        except Exception as err:
+            return None, str(err)
+        return self.unzipdir, None
+
+    def cleanupUnzip(self):
+        if self.unzipdir is not None:
+            if os.path.split(self.unzipdir)[1].startswith("mh_"):
+                print ("Cleanup " + self.unzipdir)
+                shutil.rmtree(self.unzipdir)
+
+    def localLogLine(self, dummy, text):
+        print (text)
+
+    def copyFile(self, sourcename, destname, replace, debugfunc):
+        """
+        copy file depending to replace option
+
+        :param str sourcename: name of source file
+        :param str destname: name of destination file
+        :param bool replace: should file be replaced
+        :param debugfunc: function to print debugs
+        """
+        if replace is False and os.path.isfile(destname):
+            debugfunc (1, destname + " is already existent")
+        else:
+            debugfunc (1, "copy " + sourcename + " => " + destname)
+            shutil.copyfile(sourcename, destname)
+
+    def createFolder(self, folder, debugfunc):
+        if not os.path.isdir(folder):
+            debugfunc (1, "create " + folder)
+            os.makedirs(folder, exist_ok = True)
+
+    def copyAssets(self, source, dest, mesh, replace=True, parentmesh=None, debugfunc=None):
+        """
+        after unzip copy assets to destination, also may create mesh folders for 'newbase' packs
+
+        :param str source: source folder
+        :param str dest: destination folder
+        :param str mesh: name of mesh e.g. hm08
+        :param bool replace: should files be replaced
+        :param str parentmesh: name of parentmesh or None (determines if rigs are copied)
+        """
+        l = len(source)
+
+        if debugfunc is None:
+            debugfunc = self.localLogLine
+
+        for root, dirs, files in os.walk(source, topdown=True):
+            for name in files:
+                if root.startswith(source):
+                    root = root[l+1:]
+
+                dirs = root.split(os.sep)
+                sourcefolder = os.path.join(source, root)
+                sourcename = os.path.join(sourcefolder, name)
+
+                category = dirs[0]
+                if category in ["clothes", "eyes", "eyelashes", "eyebrows", "hair", "skins", "teeth", "tongue", "proxymeshes", "rigs", "poses", "expressions"]:
+
+                    # rigs are not copied, in case of parentmesh is not None
+                    #
+                    if category == "rigs" and parentmesh is not None:
+                        debugfunc (1, "parentmesh given, rigs not accepted, no copy of" + name)
+                        continue
+
+                    # proxy is renamed
+                    #
+                    if category == "proxymeshes":
+                        category = "proxy"
+                    folder = os.path.join(dest, category, mesh)
+                    self.createFolder(folder, debugfunc)
+
+                    # for subfolders we always change to materials
+                    #
+                    if len(dirs) > 2:
+                        dirs[2] = "materials"
+
+                    restdirs = os.sep.join(dirs[1:])
+                    destfolder = os.path.join(folder, restdirs)
+                    self.createFolder(destfolder, debugfunc)
+                    #
+                    destname = os.path.join(destfolder, name)
+
+                    self.copyFile(sourcename, destname, replace, debugfunc)
+
+                elif category in ["shader_floor", "shader_litspheres", "shader_skybox"]:
+
+                    # subpath is determined from name by splitting after '_'
+                    #
+                    subcat = category.split("_")
+                    folder = os.path.join(dest, "shaders", subcat[1])
+                    restdirs = os.sep.join(dirs[1:])
+                    destfolder = os.path.join(folder, restdirs)
+                    self.createFolder(destfolder, debugfunc)
+
+                    destname = os.path.join(destfolder, name)
+
+                    self.copyFile(sourcename, destname, replace, debugfunc)
+
+                elif category == "base" or category == "models":
+
+                    # base and models folder are only one layer
+                    #
+                    folder = os.path.join(dest, category, mesh)
+                    self.createFolder(folder, debugfunc)
+                    destname = os.path.join(folder, name)
+
+                    self.copyFile(sourcename, destname, replace, debugfunc)
+
+                elif category == "contarget":
+                    folder = os.path.join(dest, category, mesh)
+                    self.createFolder(folder, debugfunc)
+
+                    restdirs = os.sep.join(dirs[1:])
+                    destfolder = os.path.join(folder, restdirs)
+                    self.createFolder(destfolder, debugfunc)
+
+                    destname = os.path.join(destfolder, name)
+
+                    self.copyFile(sourcename, destname, replace, debugfunc)
+
+
+class TargetASCII():
+    """
+    the class should also support stand-alone compressor
+    """
+
+    def __init__(self):
+        pass
+
+    def load(self, filename):
+        data = []
+        dtype = [('index','u4'),('vector','(3,)f4')]
+        try:
+            fd = open(filename, 'r', encoding='utf-8')
+        except:
+            return False, None
+        else:
+            for line in fd:
+                line = line.strip()
+                if line.startswith('#'):
+                    continue
+                translationData = line.split()
+                if len(translationData) != 4:
+                    continue
+                vertIndex = int(translationData[0])
+                translationVector = (float(translationData[1]), float(translationData[2]), float(translationData[3]))
+                data.append((vertIndex, translationVector))
+            return True, np.asarray(data, dtype=dtype)
+
+    def allowToWrite(self, filename):
+        try:
+            fp = open(filename, "w")
+        except PermissionError:
+            return False
+        else:
+            return True
+
+    def saveCompressed(self, filename, content):
+        f = open(filename, "wb")
+        np.savez_compressed(f, **content)
+        f.close()
+
+    def scanDir(self, path):
+        result = []
+        for root, dirs, files in os.walk(path, topdown=True):
+            for name in files:
+                if name.endswith(".target"):
+                    result.append(os.path.join(root, name))
+
+        return result
+
+    def loadAllTargets(self, path, verbose=0):
+        content = {}
+        l = len(path)
+        alltargets = self.scanDir(path)
+        for filename in alltargets:
+            if verbose >0:
+                print ("loading: " + filename)
+            (res, arr) = self.load(filename)
+            if res is True:
+                if filename.startswith(path):
+                    name = filename[l+1:]
+                    content[name[:-7]] = arr
+        return content
+
+    def compressAllTargets(self, sourcefolder, destfile, verbose=0, remove=True):
+        content = self.loadAllTargets(sourcefolder, verbose)
+        howmany = len(content)
+        if howmany > 0:
+            if verbose > 0:
+                print ("save compressed: " + destfile)
+            self.saveCompressed(destfile, content)
+        else:
+            if verbose > 0:
+                print ("No content for: " + destfile)
+            if remove:
+                if os.path.exists(destfile):
+                    os.remove(destfile)
+        return howmany
+

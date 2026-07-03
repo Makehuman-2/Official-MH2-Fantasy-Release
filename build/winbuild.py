@@ -1,0 +1,438 @@
+#!/usr/bin/python3
+"""
+build a windows version
+"""
+
+import os
+import re
+import shutil
+import sys
+import json
+import argparse
+import tempfile
+import subprocess
+import time
+from datetime import datetime
+
+class winBuilder():
+    def __init__(self, tmp, path, verbose, date, version):
+        self.tmp = tmp
+        self.conf = path
+        self.verbose= verbose
+        self.pynsistcfg = None
+        self.pynsistdir = None
+        self.nsipath = None
+        self.exename = None
+        self.resultexe = None
+        self.reponame = None
+        self.name = None
+        self.applvers = None
+        self.infix = None
+        self.script = None
+        self.icon = None
+        self.nsifile = None
+        self.ignoredirs = []
+        self.ignorefiles = []
+        self.remove_ascii_targets = False
+        self.remove_ascii_meshes = False
+        self.isWindows = False
+        if version:
+            self.infix = version
+        elif date:
+            dt = datetime.fromtimestamp(time.time())
+            self.infix = dt.strftime("%Y%m%d")
+        #
+        # get installer path according to OS
+        #
+        if not sys.platform.startswith('win'):
+            self.makensis = "/usr/bin/makensis"
+        else:
+            # get windows version
+            self.isWindows = True
+            import winreg
+            try:
+                nsis_dir = winreg.QueryValue(winreg.HKEY_LOCAL_MACHINE, 'SOFTWARE\\NSIS')
+            except OSError:
+                nsis_dir = winreg.QueryValue(winreg.HKEY_LOCAL_MACHINE, 'SOFTWARE\\Wow6432Node\\NSIS')
+            self.makensis = os.path.join(nsis_dir, "makensis.exe")
+
+
+    def cleanexit(self, num, text):
+        print (text)
+        exit(num)
+
+    def substitute(self, intext):
+        return re.sub(r'[^a-zA-Z0-9\._]', '_', intext)
+
+    def readJSON(self, path: str) -> dict:
+        if self.verbose:
+            print ("+ read " + path)
+        try:
+            f = open(path, 'r', encoding='utf-8')
+        except:
+            self.cleanexit (1, "Cannot read JSON " + path)
+
+        try:
+            json_object = json.load(f)
+        except json.JSONDecodeError as e:
+            self.cleanexit (2, "JSON format error in " + path + " > " + str(e))
+
+        return json_object
+
+    def mkdir(self,folder):
+        if self.verbose:
+            print ("+ check and create folder " + folder)
+        if not os.path.isdir(folder):
+            if os.path.isfile(folder):
+                self.cleanexit(2, "File exists instead of folder " + folder)
+            try:
+                os.mkdir(folder)
+            except OSError as error:
+                self.cleanexit(2, str(error))
+
+    def removeOldFolder(self):
+        if os.path.isdir(self.pynsistdir):
+            if self.verbose:
+                print ("need to remove " + self.pynsistdir)
+            shutil.rmtree(self.pynsistdir)
+
+    def copyfile(self, source, dest):
+        if self.verbose:
+            print ("+ copy " + source + " to " + dest)
+        try:
+            shutil.copyfile(source, dest)
+        except OSError as error:
+            self.cleanexit(2, str(error))
+        
+    def createPynsistCfg(self, text):
+        path = os.path.join(self.pynsistdir, self.pynsistcfg)
+        if self.verbose:
+            print ("+ write config for pynsist to " + path)
+        with open(path, "w") as tfile:
+            print(text, file=tfile)
+
+    def evaluatePynsistCfg(self):
+        json_object = self.readJSON(self.conf)
+        if self.verbose:
+            print ("+ evaluate " + self.conf)
+
+        if not os.access(self.makensis, os.X_OK):
+            self.cleanexit(1, self.makensis + " is not an executable program")
+
+        if "pynsistfile" not in json_object:
+            self.cleanexit(3, "Missing 'pynsistfile' in " + self.conf)
+        self.pynsistcfg = json_object["pynsistfile"]
+
+        if "pynsistdir" not in json_object:
+            self.cleanexit(3, "Missing 'pynsistdir' in " + self.conf)
+        self.pynsistdir = os.path.join(self.tmp, json_object["pynsistdir"])
+
+        self.removeOldFolder()
+        if "reponame" not in json_object:
+            self.cleanexit(3, "Missing 'reponame' in " + self.conf)
+        self.repodir = os.path.join(self.pynsistdir, json_object["reponame"])
+
+        if "ignoredirs" in json_object:
+            self.ignoredirs = json_object["ignoredirs"]
+
+        if "ignorefiles" in json_object:
+            self.ignorefiles = json_object["ignorefiles"]
+
+        if "mhconfigfile" not in json_object:
+            self.cleanexit(3, "Missing 'mhconfigfile' in " + self.conf)
+
+        if "exename" not in json_object:
+            self.cleanexit(3, "Missing 'exename' in " + self.conf)
+
+        if self.infix:
+            self.exename = json_object["exename"] + "-" + self.infix + ".exe"
+        else:
+            self.exename = json_object["exename"] + ".exe"
+
+        self.mkdir(self.pynsistdir)
+        self.nsipath = os.path.join(self.pynsistdir, "build", "nsis")
+        self.nsifile = os.path.join(self.nsipath, "installer.nsi")
+
+        mhconfig = json_object["mhconfigfile"]
+        mhobject = self.readJSON(mhconfig)
+
+        if "pynsist" not in json_object:
+            self.cleanexit(4, "Missing 'pynsist' in " + self.conf)
+
+        pynsist = json_object["pynsist"]
+
+        if "remove_ascii_targets" in json_object:
+            self.remove_ascii_targets = json_object["remove_ascii_targets"]
+        if "remove_ascii_meshes" in json_object:
+            self.remove_ascii_meshes = json_object["remove_ascii_meshes"]
+
+        outtext = ""
+        for cat in "Application", "Python", "Include":
+            if cat not in pynsist:
+                self.cleanexit(3, "Missing " + cat + " in " + self.conf)
+
+            outtext += "\n[" + cat + "]\n"
+            if cat == "Application":
+                appl = pynsist["Application"]
+                for item in ("name", "version", "license_file", "publisher", "script", "icon"):
+                    if item not in appl:
+                        self.cleanexit(4, "Missing " + item + " in " + cat)
+
+                    if item == "name":
+                        if "name" not in mhobject:
+                            self.cleanexit(4, "Missing name in " + mhconfig)
+                        self.name = mhobject["name"]
+                        outtext += "name=" + mhobject["name"] + "\n"
+
+                    elif item == "version":
+                        if "version" not in mhobject:
+                            self.cleanexit(4, "Missing version in " + mhconfig)
+                        self.applvers = ".".join([str(num) for num in mhobject["version"]])
+                        outtext += "version=" + self.applvers + "\n"
+
+                    elif item == "publisher":
+                        if "copyright" not in mhobject:
+                            self.cleanexit(4, "Missing copyright in " + mhconfig)
+                        outtext += "publisher=" + mhobject["copyright"] + "\n"
+
+                    elif item == "license_file":
+                        license_file = os.path.basename(appl[item])
+                        self.copyfile(appl[item], os.path.join(self.pynsistdir, license_file))
+                        outtext += item + "=" + license_file + "\n"
+
+                    elif item == "icon":
+                        self.icon = os.path.basename(appl[item])
+                        self.copyfile(appl[item], os.path.join(self.pynsistdir, self.icon))
+                        outtext += item + "=" + self.icon + "\n"
+
+                    elif item == "script":
+                        self.script = os.path.basename(appl[item])
+                        self.copyfile(appl[item], os.path.join(self.pynsistdir, self.script))
+                        outtext += item + "=" + self.script + "\n"
+
+                    else:
+                        outtext += item + "=" + appl[item] + "\n"
+
+            elif cat == "Python":
+                pyth = pynsist["Python"]
+                for item in ("version", "bitness", "format"):
+                    if item not in pyth:
+                        self.cleanexit(4, "Missing " + item + " in " + cat)
+                    outtext += item + "=" + str(pyth[item]) + "\n"
+
+            elif cat == "Include":
+                incl = pynsist["Include"]
+                for item in ("packages", "pypi_wheels", "files"):
+                    if item == "pypi_wheels":
+                        outtext += "pypi_wheels="
+                        for elem in incl["pypi_wheels"]:
+                            outtext += " " + elem + "==" + incl["pypi_wheels"][elem] + "\n"
+                    elif item == "packages":
+                        outtext += "packages="
+                        for elem in incl["packages"]:
+                            outtext += " " + elem + "\n"
+                    elif item == "files":
+                        outtext += "\nfiles= "
+                        for elem in incl["files"]:
+                            if elem == "_REPODIR_":
+                                outtext += json_object["reponame"] + "\n"
+                            else:
+                                outtext += elem + "\n"
+
+        self.resultexe = self.substitute(self.name + "_" + self.applvers) + ".exe"
+        return outtext
+
+    def copyRepo(self):
+        source = ".."
+        l = len(source)
+
+        self.mkdir(self.repodir)
+
+        for root, dirs, files in os.walk(source, topdown=True):
+            if root.startswith(source):
+                destdir = os.path.join(self.repodir, root[l+1:])
+
+            for elem in dirs:
+                dontcreate = False
+                for pat in self.ignoredirs:
+                    if re.match(pat, elem):
+                        dontcreate = True
+
+                if not dontcreate:
+                    if os.path.isdir(destdir):
+                        self.mkdir(os.path.join(destdir, elem))
+
+            if os.path.isdir(destdir):
+                for elem in files:
+                    dontcreate = False
+                    for pat in self.ignorefiles:
+                        if re.match(pat, elem):
+                            dontcreate = True
+
+                    if not dontcreate:
+                        self.copyfile(os.path.join(root, elem), os.path.join(destdir, elem))
+
+    def compileMeshCall(self, mesh, filename):
+        if self.verbose:
+            print ("+ calling compile_meshes.py " + mesh + " " + filename)
+        try:
+            if self.isWindows:
+                subprocess.call(["python3", "./compile_meshes.py", "-b", mesh, "-f", filename], cwd="..")
+            else:
+                subprocess.call(["./compile_meshes.py", "-b", mesh, "-f", filename], cwd="..")
+        except Exception as e:
+            self.cleanexit (20, "compile_meshes " + mesh + " " + filename + " failed!")
+
+    def compileAssets(self):
+        """
+        compile base meshes and assets
+        """
+        basedirs = os.path.join(self.repodir, "data", "base")
+        for base in os.listdir(basedirs):
+
+            # handle the base
+            #
+            fname = os.path.join(basedirs, base, "base.obj")
+            self.compileMeshCall(base, fname)
+            if self.remove_ascii_meshes:
+                if self.verbose:
+                    print ("delete", fname)
+                os.remove(fname)
+
+            for folder in ["clothes", "eyebrows", "eyelashes", "eyes", "hair", "proxy", "teeth", "tongue"]:
+                absfolder = os.path.join(self.repodir, "data", folder, base)
+                if os.path.isdir(absfolder):
+                    for root, dirs, files in os.walk(absfolder, topdown=True):
+                        for name in files:
+                            if name.endswith(".mhclo") or name.endswith(".proxy"):
+                                fname = os.path.join(root, name)
+                                self.compileMeshCall(base, fname)
+                                if self.remove_ascii_meshes:
+                                    if self.verbose:
+                                        print ("delete", fname)
+                                    os.remove(fname)
+                                    obj = os.path.splitext(fname)[0] + ".obj"
+                                    if self.verbose:
+                                        print ("delete", obj)
+                                    os.remove(obj)
+
+
+    def compileTargetCall(self, filename):
+        if self.verbose:
+            print ("+ calling compile_targets.py " + filename)
+        try:
+            if self.isWindows:
+                subprocess.call(["python3", "./compile_targets.py", "-f", filename], cwd="..")
+            else:
+                subprocess.call(["./compile_targets.py", "-f", filename], cwd="..")
+        except Exception as e:
+            self.cleanexit (20, "compile_target " + filename + " failed!")
+
+    def compileTargets(self):
+        """
+        compile targets
+        """
+        basedirs = os.path.join(self.repodir, "data", "target")
+        for base in os.listdir(basedirs):
+            fname = os.path.join(basedirs, base)
+            self.compileTargetCall(fname)
+
+    def removeASCIITargets(self):
+        if self.remove_ascii_targets is False:
+            return
+        basedirs = os.path.join(self.repodir, "data", "target")
+        for base in os.listdir(basedirs):
+            dname = os.path.join(basedirs, base)
+            if self.verbose:
+                print ("delete targets in " + dname)
+            for root, dirs, files in os.walk(dname, topdown=True):
+                for name in files:
+                    if name.endswith(".target"):
+                        fname = os.path.join(root, name)
+                        os.remove(fname)
+
+            walk = list(os.walk(dname))
+            for path, _, _ in walk[::-1]:
+                if len(os.listdir(path)) == 0:
+                    os.rmdir(path)
+
+    def modifyInstaller(self):
+        """
+        replace the shortcut
+        """
+        if self.verbose:
+            print ("+ placing desktop shortcut in installer.nsi")
+        shortcut = '    CreateShortCut "$DESKTOP\\' + self.name + '.lnk" "$INSTDIR\\Python\\python.exe" \'"$INSTDIR\\' + self.script + '"\' "$INSTDIR\\' + self.icon + '"\n\n'
+
+        delshortcut = '     Delete "$DESKTOP\\MakeHuman II.lnk"\n'
+
+        with open(self.nsifile, 'r') as ifile:
+            data = ifile.readlines()
+
+        added = 0
+        with open(self.nsifile, 'w') as ifile:
+            for l in data:
+                if added == 1:
+                    added = 2
+                    continue
+                if "%HOMEDRIVE%\\%HOMEPATH%" in l:
+                    ifile.write( "  SetOutPath \"$INSTDIR\"\n")
+                elif added == 0 and "CreateShortCut" in l:
+                    ifile.write(shortcut)
+                    if l.endswith("\\\n"):
+                        added = 1
+                    else:
+                        added = 2
+                elif ".lnk" in l:
+                    ifile.write(delshortcut)
+                else:
+                    ifile.write(l)
+
+    def pynsistCall(self):
+        if self.verbose:
+            print ("+ calling pynsist " + self.pynsistcfg)
+        try:
+            if self.isWindows:
+                subprocess.call(["python3", "-m", "nsist", "--no-makensis", self.pynsistcfg], cwd=self.pynsistdir)
+            else:
+                subprocess.call(["pynsist", "--no-makensis", self.pynsistcfg], cwd=self.pynsistdir)
+        except Exception as e:
+            self.cleanexit (10, "pynsist --no-makensis " + self.pynsistcfg + " failed!")
+
+    def makensisCall(self):
+        if self.verbose:
+            print ("+ calling makensis")
+        try:
+            subprocess.call([self.makensis, self.nsifile ], cwd=self.pynsistdir)
+        except Exception as e:
+            self.cleanexit (11, self.makensis + " " + self.nsifile + " failed!")
+        dest = os.path.join(self.nsipath, self.exename)
+        os.rename (os.path.join(self.nsipath, self.resultexe), dest)
+        print ("File created: " + dest)
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="Create a windows packet. Make sure no extra directories are placed in parent, directories starting with '.' are skipped.")
+    parser.add_argument("builddir", type=str, nargs='?',
+            help="where to build the package, default is an autogenerated temporary directory")
+    parser.add_argument("--verbose", "-v", action='store_true',  help="verbose")
+    parser.add_argument("--date", "-d", action='store_true',  help="add datestamp to name")
+    parser.add_argument("--version", "-V", type=str,  help="version like 'alpha1'")
+
+    args = parser.parse_args()
+    if not args.builddir:
+        args.builddir = tempfile.gettempdir()
+    if args.verbose:
+        print ("+ working with " + args.builddir)
+    
+    wb = winBuilder(args.builddir, "./build.json", args.verbose, args.date, args.version)
+    outtext = wb.evaluatePynsistCfg()
+    wb.createPynsistCfg(outtext)
+    wb.copyRepo()
+    wb.compileTargets()
+    wb.removeASCIITargets()
+    wb.compileAssets()
+    wb.pynsistCall()
+    wb.modifyInstaller()
+    wb.makensisCall()
+
+exit(0)

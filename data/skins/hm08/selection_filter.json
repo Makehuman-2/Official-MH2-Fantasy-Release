@@ -1,0 +1,9 @@
+{
+	"Gender-Age": ["Male", "Female", "Child", "Baby"],
+	"Era": ["Contemporary", "Future", "Past"],
+	"Genre": ["Realistic", "Comic", "Fantasy"],
+	 "Shortcut": [
+                ["c:female.png", "gender-age:female", "Female characters"],
+                ["c:male.png", "gender-age:male", "Male characters"]
+	]
+}

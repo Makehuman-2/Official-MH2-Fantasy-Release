@@ -1,0 +1,39 @@
+July 25 Fantasy release patch/changenotes:
+
+New Features:
+
+- glass shader pbr
+- normals for phong shader
+- fantasy base mesh for MH2
+- fantasy helpers for blender MC2
+- fantasy skeleton MH2 and exportable in base mesh with parts.
+- basic parts for fantasy mesh in MH2
+- obj exporter now works with posed character
+- changes in renderer to also allow foreground render
+- ability to load assetpacks using a parent mesh
+
+
+Quality of life improvements:
+
+- first installation: test if user area is writable
+- mhmat file loader button
+- cache clearing button in preferences.
+- double clicking for selections
+- logwindow now uses a timer (can be switched off) to reload messages (when activated)
+- sqllite reload (cached database) can be triggered from menu
+- file selector to make search easier when an asset-pack zip file is already downloaded
+- splitter sliders added.
+- fixed pathnames for default assets
+
+Bugfixes:
+
+- normals for pbr shader corrected
+- avoid showing mesh bugs when loading character (it froze system)
+- obj exporter now should not do artifacts
+- gltf, mh2b should work with corrections
+- changed behaviour to use mhpose file similar as bvh file (correction of bones, using it in renderer etc)
+- ability to correct bones in animation NOT used in bvh files
+- saving model: use a different method for MHM file caching, since neither name nor uuid had to be changed.
+  (this resulted in only one visible file)
+- eye-materials only in user folder, meshes in system folder (materials were not found)
+

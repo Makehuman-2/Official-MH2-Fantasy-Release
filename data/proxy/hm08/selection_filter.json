@@ -1,0 +1,11 @@
+{
+	"Gender-Age": ["Male", "Female", "Child", "Baby"],
+	 "Shortcut": [
+                ["c:female.png", "gender-age:female", "Female characters"],
+                ["c:male.png", "gender-age:male", "Male characters"]
+	],
+        "GuessName": {
+                "female": "gender:female"
+        }
+
+}

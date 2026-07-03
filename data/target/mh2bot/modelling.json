@@ -1,0 +1,68 @@
+{
+	"UArm Length": {
+		"name": "Upper Arms Length",
+		"group": "main|arms",
+                "decr": "armslegs/upperarms-length-decr",
+                "incr": "armslegs/upperarms-length-incr"
+	},
+	"UArm Diameter": {
+		"name": "Upper Arms Diameter",
+		"group": "main|arms",
+                "decr": "armslegs/upperarms-diameter-decr",
+                "incr": "armslegs/upperarms-diameter-incr"
+	},
+	"LArm Length": {
+		"name": "Forearms Length",
+		"group": "main|arms",
+                "decr": "armslegs/forearms-length-decr",
+                "incr": "armslegs/forearms-length-incr"
+	},
+	"LArm Diameter": {
+		"name": "Forearms Diameter",
+		"group": "main|arms",
+                "decr": "armslegs/forearms-diameter-decr",
+                "incr": "armslegs/forearms-diameter-incr"
+	},
+	"UBody Height": {
+		"name": "Upper Body Height",
+		"group": "main|body",
+                "decr": "body/upperbody-height-decr",
+                "incr": "body/upperbody-height-incr"
+	},
+	"UBody Width": {
+		"name": "Upper Body Width",
+		"group": "main|body",
+                "decr": "body/upperbody-width-decr",
+                "incr": "body/upperbody-width-incr"
+	},
+	"UBody Depth": {
+		"name": "Upper Body Depth",
+		"group": "main|body",
+                "decr": "body/upperbody-depth-decr",
+                "incr": "body/upperbody-depth-incr"
+	},
+	"ULeg Length": {
+		"name": "Upper Legs Length",
+		"group": "main|legs",
+                "decr": "armslegs/upperlegs-length-decr",
+                "incr": "armslegs/upperlegs-length-incr"
+	},
+	"ULeg Diameter": {
+		"name": "Upper Legs Diameter",
+		"group": "main|legs",
+                "decr": "armslegs/upperlegs-diameter-decr",
+                "incr": "armslegs/upperlegs-diameter-incr"
+	},
+	"LLeg Length": {
+		"name": "Lower Legs Length",
+		"group": "main|legs",
+                "decr": "armslegs/lowerlegs-length-decr",
+                "incr": "armslegs/lowerlegs-length-incr"
+	},
+	"LLeg Diameter": {
+		"name": "Lower Legs Diameter",
+		"group": "main|legs",
+                "decr": "armslegs/lowerlegs-diameter-decr",
+                "incr": "armslegs/lowerlegs-diameter-incr"
+	}
+}

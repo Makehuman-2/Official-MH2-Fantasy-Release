@@ -1,0 +1,552 @@
+/*
+ * Elvaerwyn MH2 Official MH 2 Colors Steel-Theme MakeHuman II CSS file
+ * True Final Polished Version: MH2 Ocean Base with Luminous Mermaid Accents 2026
+ */
+
+/* --- Global Background --- */
+QWidget {
+    color: #FFFFFF;
+    font-weight: bold;
+    background: qradialgradient(cx: 0.5, cy: 0.5, radius: 1.0, fx: 0.5, fy: 0.5,
+                stop: 0 #3c3c3c,    /* Original charcoal center */
+                stop: 0.6 #2b2b2b,  
+                stop: 1 #000000);   /* Deep black edges */
+}
+
+/* --- Panel Styling with Permanent Accents --- */
+QFrame#groupbox, QGroupBox, QListWidget, QTreeView, QTableView, QMenu {
+    border-radius: 8px;
+    border: 3px solid #1DA2D8; /* Ocean Waves Blue */
+    /* Permanent Deep Mermaid Purple ring at edges */
+    background: qradialgradient(cx: 0.5, cy: 0.5, radius: 1.1,
+                fx: 0.5, fy: 0.5,
+                stop: 0 #989898,
+                stop: 0.8 #323232,
+                stop: 1.0 #5A2E7A);
+}
+
+/* Modeling Window with Shimmer Pink Glow */
+QFrame#groupbox {
+    border: 4px solid #1DA2D8;
+    background: qradialgradient(cx: 0.5, cy: 0.5, radius: 1.1,
+                fx: 0.5, fy: 0.5,
+                stop: 0 #989898,
+                stop: 0.7 #323232,
+                stop: 1.0 #FF70A6); /* Permanent Shimmer Pink glow */
+}
+
+QListWidget {
+    color: #FFFFFF;
+    selection-background-color: #5A2E7A; /* Permanent purple selection */
+}
+
+/* Header hover effect */
+QFrame#gboxnontitle:hover, QFrame#gboxseltools:hover {
+    border-color: #9D4EDD; /* Luminous Violet on hover */
+}
+
+/* --- Buttons --- */
+QPushButton {
+    color: #000000;
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+                 stop:0 #ffffff, stop:0.5 #e0e0e0, stop:1 #ffffff);
+    border: 3px solid #989898;
+    border-radius: 6px;
+}
+
+QPushButton:hover {
+    border: 2px solid #9D4EDD; /* Violet on hover */
+}
+
+/* Active Button State */
+QPushButton:checked, QPushButton:pressed {
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+                 stop:0 #989898, stop:0.5 #5A2E7A, stop:1 #989898) !important;
+    color: #FFFFFF;
+    border: 4px solid #FFFFFF !important;
+}
+/* --- Menu & Navigation --- */
+QMenuBar {
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+                stop:0 #444444, stop:0.5 #1e1e1e, stop:1 #000000);
+    color: #FFFFFF;
+}
+
+QMenuBar::item:selected, QMenu::item:selected {
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+                stop:0 #9D4EDD, stop:1 #323232); /* Violet menu selection highlight */
+    color: #FFFFFF;
+}
+
+/* --- Sliders --- grooves need to change x and y */
+
+QSlider::groove:horizontal {
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+                stop:0 #000000, stop:0.5 #333333, stop:1 #000000);
+    height: 10px;
+    border-radius: 5px;
+    border: 1px solid #1DA2D8; /* Waves Blue track edge */
+}
+
+QSlider::groove:vertical {
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0,
+                stop:0 #000000, stop:0.5 #333333, stop:1 #000000);
+    width: 10px;
+    border-radius: 5px;
+    border: 1px solid #1DA2D8;
+}
+
+QSlider::sub-page:horizontal {
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+                stop:0 #989898, stop:0.5 #FF70A6, stop:1 #323232); /* VISIBLE: Filled tracking channel uses Shimmer Pink */
+    border-radius: 5px;
+    border: 1px solid #FF70A6;
+}
+QSlider::add-page:horizontal {
+}
+
+QSlider::sub-page:vertical {
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+                stop:0 #989898, stop:0.5 #FF70A6, stop:1 #323232); /* VISIBLE: Filled tracking channel uses Shimmer Pink */
+    border-radius: 5px;
+    border: 1px solid #FF70A6;
+}
+
+QSlider::add-page:vertical {
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0,
+                stop:0 #989898, stop:0.5 #1DA2D8, stop:1 #323232); /* Unfilled track remains clean Waves Blue */
+    border-radius: 5px;
+    border: 1px solid #1DA2D8;
+}
+
+QSlider::handle:horizontal {
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+                stop:0 #ffffff, stop:1 #bbbbbb); /* Kept original version 1 steel handle style */
+    border: 2px solid #000000;
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+}
+
+QSlider::handle:vertical {
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0,
+                stop:0 #ffffff, stop:1 #bbbbbb);
+    border: 2px solid #000000;
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+}
+
+QSlider::groove:hover {
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #000000, stop:0.5 #555555, stop:1 #000000);
+    border: 1px solid #9D4EDD; /* Glows Violet on groove hover */
+}
+
+QSlider::handle:hover {
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #ffffff, stop:1 #FF70A6); /* Handle turns to full Shimmer Pink on mouse-over */
+    border: 2px solid #9D4EDD;
+}
+
+QSlider::groove:disabled {
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #323232, stop:0.5 #888888, stop:1 #323232);
+    height: 14px;
+}
+
+QSlider::sub-page:disabled {
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #323232, stop:0.5 #888888, stop:1 #323232);
+    border-radius: 5px;
+    border: 3px solid #042744;
+}
+
+/* --- Progress Bar --- */
+QProgressBar {
+    background-color: #000000;
+    color: #FFFFFF;
+    border: 1px solid #989898;
+    text-align: center;
+    border-radius: 6px;
+}
+
+QProgressBar::chunk {
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0,
+                stop:0 #323232, stop:0.2 #1DA2D8, stop:0.5 #9D4EDD, stop:1 #323232); /* VISIBLE: Loaded tracking line moves from blue to Luminous Violet */
+    border-radius: 5px;
+}
+/* --- High-Contrast Metallic Headers --- */
+/* --- High-Fidelity Glow Headers (Matching Panels) --- */
+QLabel#groupbox {
+    qproperty-alignment: AlignCenter;
+    border: 2px solid #1DA2D8; /* Ocean blue framing edge */
+    border-radius: 4px;
+    max-height: 16px;
+    font: bold 14px;
+    color: #FFFFFF;
+
+    /* Matches the 'bleed' effect of the main panels with a purple edge tint */
+    background: qradialgradient(cx: 0.5, cy: 0.5, radius: 1.1,
+                fx: 0.5, fy: 0.5,
+                stop: 0 #989898,   /* Original metallic center */
+                stop: 0.7 #323232, /* Dark mid-tones */
+                stop: 1.0 #5A2E7A); /* VISIBLE: Deep Mermaid Purple edge bleed */
+}
+
+/* --- High-Fidelity Glow Tabs --- */
+QTabBar::tab:selected {
+    border: 3px solid #1DA2D8; /* Connected to the main box border */
+    border-bottom: none; 
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    padding: 4px 10px;
+    color: #FFFFFF;
+
+    /* Active selected tabs constantly bleed into a purple edge glow */
+    background: qradialgradient(cx: 0.5, cy: 0.5, radius: 1.1,
+                fx: 0.5, fy: 0.5,
+                stop: 0 #989898,
+                stop: 0.7 #323232,
+                stop: 1.0 #5A2E7A); /* VISIBLE: Mermaid Purple active edge */
+}
+
+QLabel {
+    background-color: transparent;
+    margin-top: 6px;
+}
+
+QToolTip {
+    border: 1px solid #9D4EDD; /* Violet tooltip frame perimeter */
+    background-color: #5A2E7A; /* Deep Mermaid Purple background card */
+    padding: 1px;
+    opacity: 255;
+    color: #FFFFFF;
+}
+
+/* Sub-windows logic updated for Radial depth */
+QGroupBox#subwindow {
+    font: bold 13px;
+    border: 3px solid #989898;
+    background: qradialgradient(cx: 0.5, cy: 0.5, radius: 1.5,
+                fx: 0.5, fy: 0.5,
+                stop: 0 #989898, stop: 1 #323232); /* Main inner canvas stays dark grey */
+    padding-top: 25px;
+    margin-top: 10px;
+}
+
+/* Fix the Header (Title) of the Modeling Window */
+QGroupBox::title#subwindow {
+    color: #FFFFFF; 
+    /* VISIBLE: Header panel strips shine permanently with Pink and Violet */
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+                stop:0 #FF70A6, stop:1 #9D4EDD); 
+    subcontrol-origin: margin;
+    subcontrol-position: top center;
+    padding: 2px 20px;
+    border: 1px solid #1a1a1a;
+    border-radius: 4px;
+}
+
+/* Radio/Checkbox Indicators */
+QRadioButton::indicator:checked {
+    background-color: #9D4EDD; /* VISIBLE: Active dot target node stays Luminous Violet */
+    border: 1px solid #FFFFFF;
+    border-radius: 6px;
+}
+
+QRadioButton::indicator:unchecked {
+    background-color: #1e1e1e;
+    border: 1px solid #989898;
+    border-radius: 6px;
+}
+
+QCheckBox::indicator:unchecked {
+    background-color: #1e1e1e;
+    border: 1px solid #989898;
+}
+
+QCheckBox::disabled {
+    color: #808080;
+}
+
+QCheckBox::indicator:hover, QRadioButton::indicator:hover {
+    border: 1px solid #FF70A6; /* Hovering option circles flashes Shimmer Pink */
+    background-color: #323232;
+}
+
+/* Header View sections for Tables */
+QHeaderView {
+    background-color: #989898;
+}
+
+QHeaderView::section {
+    background-color: #989898;
+    color: #FFFFFF;
+    padding: 4px;
+    border: 1px solid #1a1a1a;
+}
+
+/* Slider padding and Selection logic */
+QSlider::horizontal { padding-top: -3px; padding-bottom: -3px; }
+QSlider::vertical { padding-left: -3px; padding-right: -3px; }
+
+QListWidget::item:selected, QTreeView::item:selected, QTableView::item:selected {
+    background: qradialgradient(cx: 0.5, cy: 0.5, radius: 0.8,
+                fx: 0.5, fy: 0.5,
+                stop: 0 #9D4EDD, stop: 1 #1e1e1e); /* Selections hold a Luminous Violet center blast */
+    color: #FFFFFF;
+}
+/* words in tree on left */
+QTreeView {
+    selection-color: #000000;
+    selection-background-color: #5A2E7A; /* Deep Mermaid Purple selection */
+    color: #FFFFFF;
+    show-decoration-selected: 0;
+}
+
+/* --- Glowing Inactive Tabs --- */
+QTabBar::tab {
+    border: 1px solid #555555;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    padding: 4px 10px;
+    color: #FFFFFF; /* White text for inactive tabs */
+
+    /* Dimmed Glow: Darker and moodier than the active tab */
+    background: qradialgradient(cx: 0.5, cy: 0.5, radius: 1.1,
+                fx: 0.5, fy: 0.5,
+                stop: 0 #3c1e54,   /* Muted deep purple center */
+                stop: 0.6 #5A2E7A, /* VISIBLE: Deep Mermaid Purple permanent transition */
+                stop: 1.0 #323232); /* Fades into the charcoal panel */
+}
+
+QTabBar::tab:hover {
+    color: #FF70A6; /* Text glows Shimmer Pink on hover */
+    background: qradialgradient(cx: 0.5, cy: 0.5, radius: 1.1,
+                fx: 0.5, fy: 0.5,
+                stop: 0 #5A2E7A,
+                stop: 1.0 #1e1e1e);
+}
+
+/* --- Reliable Sub Boxes Hover --- */
+
+/* 1. Targets the small icon cells/frames on the right */
+QFrame[frameShape="6"]:hover,
+QFrame#gboxnontitle:hover,
+QFrame#gboxseltools:hover {
+    border: 2px solid #1DA2D8 !important; /* Ocean Waves Blue border */
+}
+
+/* 4. Sliders (Groove only) */
+QSlider::groove:hover {
+    border: 1px solid #1DA2D8 !important;
+}
+
+/* little box lower right */
+QLabel#sizeinfo {
+    color: white;
+    border: 3px solid #1DA2D8; /* Ocean border */
+    border-radius: 8px;
+    margin: 5px;
+    padding: 10px;
+    padding-right: 15px;
+
+    background:
+        /* 3. The "Fade" layer - white with low opacity, soft texture spray */
+        qradialgradient(cx: 0.5, cy: 0.5, radius: 1, fx: 0.5, fy: 0.5,
+            stop: 0 rgba(255, 255, 255, 0.4), stop: 1 transparent),
+        /* 1. The Stamp (Top-Right) - Uses alpha deep purple */
+        qradialgradient(cx: 0.9, cy: 0.1, radius: 0.4, fx: 0.9, fy: 0.1,
+            stop: 0 rgba(90, 46, 122, 0.2), stop: 1 transparent),
+        /* 2. Main Background */
+        qradialgradient(cx: 0.5, cy: 0.5, radius: 1.1, fx: 0.5, fy: 0.5,
+            stop: 0 #323232, stop: 1.0 #1e1e1e);
+
+    image: url(data/icons/faded_logo.png);
+    qproperty-alignment: 'AlignTop | AlignRight';
+}
+
+QLabel#sizeinfo:hover {
+    color: black;
+    border: 3px solid #1e1e1e;
+
+    /* MAGICAL GLOW: Stacking exact original overlay physics with Luminous Violet and Mermaid Shimmer Pink sweeps */
+    background:
+        /* Layer 1: The faint dark glow top-right stamp overlay */
+        qradialgradient(cx: 0.9, cy: 0.1, radius: 0.4, fx: 0.9, fy: 0.1,
+                        stop: 0 rgba(0, 0, 0, 0.15), stop: 1 transparent),
+        /* Layer 2: Main Linear alpha magical sweep - Luminous Violet into Mermaid Shimmer Pink */
+        qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                        stop: 0 rgba(157, 78, 221, 0.7), stop: 1 rgba(255, 112, 166, 0.8));
+
+    image: url(data/icons/faded_logo.png);
+}
+
+/* --- Clickable Progress Bar (Clickbar) --- */
+
+QProgressBar#clickbar:hover {
+    border: 2px solid #1DA2D8 !important;
+    /* Intense the glow on hover */
+    background: qradialgradient(cx: 0.5, cy: 0.5, radius: 1.0,
+                fx: 0.5, fy: 0.5,
+                stop: 0 #FF70A6,   /* Brighter Mermaid Shimmer Pink highlight */
+                stop: 1.0 #323232);
+}
+/* --- Last min fixes --- */
+
+QTabWidget::pane {
+    border: 3px solid #1DA2D8; /* Ocean Waves Blue border */
+    top: -3px; /* Pulls the pane up to overlap the tab border */
+}
+
+QListWidget::item:hover, QTreeView::item:hover {
+    background: rgba(157, 78, 221, 0.2); /* Subtle Luminous Violet tint */
+}
+
+QScrollBar:vertical {
+    border: 1px solid #1e1e1e;
+    background: #323232;
+    width: 12px;
+    margin: 0px;
+}
+QScrollBar::handle:vertical {
+    background: #1DA2D8; /* Waves Blue track tracking handle */
+    min-height: 20px;
+    border-radius: 4px;
+}
+
+QLineEdit, QSpinBox {
+    background-color: #1e1e1e;
+    border: 1px solid #1DA2D8; /* Waves Blue frame border */
+    padding: 2px;
+    color: #ffffff;
+}
+
+QComboBox {
+    background: #323232;
+    border: 1px solid #989898;
+    border-radius: 3px;
+    padding: 1px 18px 1px 3px;
+}
+
+QComboBox::drop-down {
+    border-left: 1px solid #989898;
+}
+
+/* --- Styling the Scrollbar Ends (Up/Down Buttons) --- */
+
+/* --- Metallic Gradient Scrollbars --- */
+QScrollBar:vertical {
+    border: 1px solid #1e1e1e;
+    background: #000000;
+    width: 14px;
+    margin: 18px 0 18px 0; /* Creates space for top/bottom buttons */
+}
+
+QScrollBar:horizontal {
+    border: 1px solid #1e1e1e;
+    background: #000000;
+    height: 14px;
+    margin: 0 18px 0 18px; /* Creates space for left/right buttons */
+}
+
+/* The Handle (The Sliding Part) */
+QScrollBar::handle:vertical {
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0,
+                stop:0 #ffffff, stop:0.5 #e0e0e0, stop:1 #ffffff); /* Retained original version 1 steel handle style */
+    border: 2px solid #989898;
+    border-radius: 4px;
+    min-height: 20px;
+}
+
+QScrollBar::handle:horizontal {
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+                stop:0 #ffffff, stop:0.5 #e0e0e0, stop:1 #ffffff);
+    border: 2px solid #989898;
+    border-radius: 4px;
+    min-width: 20px;
+}
+
+/* The Buttons (Ends) */
+QScrollBar::add-line, QScrollBar::sub-line {
+    border: 4px solid #989898;
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1,
+                stop:0 #000000, stop:0.5 #3c1e54, stop:1 #000000); /* Dark amethyst purple interior track block */
+    border-radius: 4px;
+    subcontrol-origin: margin;
+}
+
+/* --- Pressed State for Scrollbar Buttons --- */
+QScrollBar::add-line:pressed, QScrollBar::sub-line:pressed {
+    /* Glowing violet center with dark edges */
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1,
+                stop:0 #3c1e54, stop:0.5 #9D4EDD, stop:1 #3c1e54);
+
+    /* Solid black border */
+    border: 3px solid #000000;
+}
+
+/* Vertical Button Positions */
+QScrollBar::sub-line:vertical { height: 16px; subcontrol-position: top; }
+QScrollBar::add-line:vertical { height: 16px; subcontrol-position: bottom; }
+
+/* Horizontal Button Positions */
+QScrollBar::sub-line:horizontal { width: 16px; subcontrol-position: left; }
+QScrollBar::add-line:horizontal { width: 16px; subcontrol-position: right; }
+
+/* Hover & Active States */
+QScrollBar::handle:hover { border-color: #3c1e54; }
+QScrollBar::handle:pressed { background: #9D4EDD; }
+
+QComboBox::down-arrow {
+    image: url(data/icons/expand_ocean_down.png); /* Keeps connection to your ocean assets */
+    subcontrol-origin: padding;
+    subcontrol-position: center;
+    padding-right: 2px;
+    padding-left: 4px;
+    width: 16px;
+    height: 16px;
+}
+
+QComboBox::down-arrow:hover {
+    image: url(data/icons/expand_ocean_down_hover.png);
+    background-color: rgba(255, 112, 166, 0.2); /* Shimmer Pink dropdown click overlay */
+}
+
+/* --- TreeView: The "Single-Glow" Final Fix --- */
+
+/* 1. Reset the base branch so it doesn't double-draw */
+QTreeView::branch {
+    background: transparent;
+}
+
+/* 2. Target the "Adjoins-Item" state ONLY.
+      This is the specific segment right next to the text.
+      It ensures only ONE ball appears per row. */
+QTreeView::branch:adjoins-item {
+    background: qradialgradient(cx: 0.5, cy: 0.5, radius: 0.4,
+                fx: 0.5, fy: 0.5,
+                stop: 0 #9D4EDD,   /* VISIBLE: Tree tracking node point stays Luminous Violet by default */
+                stop: 0.7 #323232, /* Fades into the charcoal panel */
+                stop: 1.0 transparent);
+    border-radius: 4px;
+}
+
+/* 3. Make the ball glow brighter ONLY when the row is hovered or selected */
+QTreeView::branch:adjoins-item:hover,
+QTreeView::item:hover {
+    background: qradialgradient(cx: 0.5, cy: 0.5, radius: 0.5,
+                fx: 0.5, fy: 0.5,
+                stop: 0 #FF70A6,   /* VISIBLE: Node dots burst into a vibrant Mermaid Shimmer Pink on hover */
+                stop: 1.0 transparent);
+}
+
+/* 4. This kills the vertical lines that cause the "Double Ball" effect */
+QTreeView::branch:has-siblings:!adjoins-item {
+    background: transparent; /* No balls for the connecting lines */
+    image: none;
+}
+
+/* 5. Kill the dotted lines but keep the arrows */
+QTreeView::branch:has-siblings:!adjoins-item,
+QTreeView::branch:has-siblings:adjoins-item,
+QTreeView::branch:!has-children:!has-siblings:adjoins-item {
+    border-image: none;
+}
