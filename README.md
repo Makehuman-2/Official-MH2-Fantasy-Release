@@ -9,7 +9,7 @@
 
 ## Introduction
 
-MakeHuman 2 is the successor of the standalone version MakeHuman 1, which has been running for more than 10 years. There will be additional features like working with additional base meshes, animation and PBR shading. For exports glTF standard will be supported. Some old standards will be no longer supported.
+MakeHuman 2 is the successor of the standalone version MakeHuman 1, which has been running for more than 10 years. There will be additional features in future(underwraps). For exports glTF standard is supported. Some old standards will be no longer supported. However more to come in this also going forward!
 
 If you would like to test or work with this version:
 
