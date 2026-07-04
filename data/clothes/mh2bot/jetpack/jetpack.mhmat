@@ -1,0 +1,21 @@
+# MakeHuman2 Material definition for jetpack material
+name jetpack material
+description jetpack material
+
+ambientColor 1.0 1.0 1.0
+diffuseColor 0.8001 0.0868 0.0088
+emissiveColor 0.0 0.0 0.0
+metallicFactor 0.53
+roughnessFactor 0.37
+
+transparent True
+alphaToCoverage True
+backfaceCull False
+
+diffuseTexture jetpack_diffuse.png
+aomapIntensity 1.0
+
+
+shader pbr
+
+
