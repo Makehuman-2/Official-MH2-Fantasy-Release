@@ -1,0 +1,22 @@
+# MakeHuman2 Material definition for 3dtext material
+name 3dtext material
+description 3dtext material
+
+ambientColor 1.0 1.0 1.0
+diffuseColor 0.2179 0.2179 0.2179
+emissiveColor 0.0 0.0 0.0
+metallicFactor 1.0
+roughnessFactor 0.3
+
+transparent False
+alphaToCoverage True
+backfaceCull False
+
+
+diffuseTexture 3dtextdiffuse.png
+aomapIntensity 1.0
+
+
+shader pbr
+
+
