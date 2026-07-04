@@ -28,6 +28,7 @@ __pycache__/
 *.mhmat
 *.mhpose
 *.meta
+*.mhbin
 *.mhuv
 #*.mhw
 *.proxy
@@ -87,3 +88,4 @@ Thumbs.db
 # Python Packages #
 ###################
 .eggs/*
+*.mhbin
