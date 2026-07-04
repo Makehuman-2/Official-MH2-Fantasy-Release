@@ -1,0 +1,21 @@
+# MakeHuman2 Material definition for oilcan material
+name oilcan material
+description oilcan material
+
+ambientColor 1.0 1.0 1.0
+diffuseColor 0.2179 0.2179 0.2179
+emissiveColor 0.0 0.0 0.0
+metallicFactor 1.0
+roughnessFactor 0.31
+
+transparent False
+alphaToCoverage True
+backfaceCull False
+
+diffuseTexture oilcan.png
+aomapIntensity 1.22
+
+
+shader pbr
+
+
