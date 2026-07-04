@@ -1,0 +1,21 @@
+# MakeHuman2 Material definition for default
+name default
+description default material
+
+ambientColor 1.0 1.0 1.0
+diffuseColor 0.4470588266849518 0.6235294342041016 0.8117647171020508
+specularColor 0.5 0.5 0.5
+emissiveColor 0.0 0.0 0.0
+metallicFactor 0.32
+roughnessFactor 0.66
+
+transparent False
+alphaToCoverage False
+backfaceCull False
+
+aomapIntensity 1.0
+
+
+shader pbr
+
+
