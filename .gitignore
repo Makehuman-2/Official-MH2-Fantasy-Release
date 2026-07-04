@@ -29,7 +29,7 @@ __pycache__/
 *.mhpose
 *.meta
 *.mhuv
-*.mhw
+#*.mhw
 *.proxy
 *.mhpxy
 *.list
