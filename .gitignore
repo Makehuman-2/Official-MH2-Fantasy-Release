@@ -34,7 +34,7 @@ __pycache__/
 *.mhpxy
 *.list
 *.bvh
-*.mhskel
+#*.mhskel
 /makehuman/data/*
 base_1-1_contents.txt
 
