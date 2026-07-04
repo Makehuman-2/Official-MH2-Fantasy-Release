@@ -24,6 +24,7 @@ Quality of life improvements:
 - file selector to make search easier when an asset-pack zip file is already downloaded
 - splitter sliders added.
 - fixed pathnames for default assets
+- the default skeleton now is packaged with build
 
 Bugfixes:
 
