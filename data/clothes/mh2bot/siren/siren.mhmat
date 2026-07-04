@@ -1,0 +1,23 @@
+# MakeHuman2 Material definition for siren material
+name siren material
+description siren material
+
+ambientColor 1.0 1.0 1.0
+diffuseColor 0.027 0.027 0.027
+emissiveColor 0.0 0.0 0.0
+metallicFactor 1.0
+roughnessFactor 0.24
+
+transparent True
+alphaToCoverage True
+backfaceCull False
+
+diffuseTexture sirencrown.png
+aomapIntensity 1.0
+emissiveTexture sirenlight.png
+emissiveFactor 1.0
+
+
+shader pbr
+
+
