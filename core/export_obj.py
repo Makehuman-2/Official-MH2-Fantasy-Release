@@ -88,26 +88,35 @@ class objExport:
                 overflow[l[1]] = l[0]
         x = 0
 
+        last= self.startvert + self.obj[num]["lenV"]
         if self.normals:
             for n in vpf:
                 out = "f "
+                saveit = True
                 for i in range(n):
                     uvface = faces[x]
                     face = overflow[uvface] if uvface in overflow else uvface
+                    if (face + self.startvert) >= last:
+                        saveit = False
 
                     out += "%d/%d/%d " % (face+self.startvert, uvface+self.startuv, face+self.startvert)
                     x += 1
-                self.facelines.append(out + "\n")
+                if saveit:
+                    self.facelines.append(out + "\n")
         else:
             for n in vpf:
                 out = "f "
+                saveit = True
                 for i in range(n):
                     uvface = faces[x]
                     face = overflow[uvface] if uvface in overflow else uvface
+                    if (face + self.startvert) >= last:
+                        saveit = False
 
                     out += "%d/%d " % (face+self.startvert, uvface+self.startuv)
                     x += 1
-                self.facelines.append(out + "\n")
+                if saveit:
+                    self.facelines.append(out + "\n")
 
         self.startvert += self.obj[num]["lenV"]
         self.startuv   += self.obj[num]["lenUV"]
@@ -119,38 +128,22 @@ class objExport:
             material is a class and the definition (defaults) prevents wrong values.
             If this is not given all openGL processes would immediately crash
         """
-        # --- Explicitly unpack R, G, B elements to prevent list-type mismatch crashes ---
-        diff = getattr(material, "diffuseColor", [0.8, 0.8, 0.8])
-        if hasattr(diff, "__len__") and len(diff) >= 3:
-            d_r, d_g, d_b = diff[0], diff[1], diff[2]
-        else:
-            d_r, d_g, d_b = 0.8, 0.8, 0.8
 
-        spec = getattr(material, "specularColor", [0.8, 0.8, 0.8])
-        if hasattr(spec, "__len__") and len(spec) >= 3:
-            s_r, s_g, s_b = spec[0], spec[1], spec[2]
-        else:
-            s_r, s_g, s_b = 0.8, 0.8, 0.8
-
-        emis = getattr(material, "emissiveColor", [0.0, 0.0, 0.0])
-        if hasattr(emis, "__len__") and len(emis) >= 3:
-            e_r, e_g, e_b = emis[0], emis[1], emis[2]
-        else:
-            e_r, e_g, e_b = 0.0, 0.0, 0.0
+        diff = material.diffuseColor
+        d_r, d_g, d_b = diff[0], diff[1], diff[2]
+        spec = material.specularColor
+        s_r, s_g, s_b = spec[0], spec[1], spec[2]
+        emis = material.emissiveColor
+        e_r, e_g, e_b = emis[0], emis[1], emis[2]
 
         alpha = 1
-        
-        # --- Safely acquire PBR factors ---
+
         rough = getattr(material, "roughnessFactor", 0.5)
         metal = getattr(material, "metallicFactor", 0.0)
-        
-        # Safe fallback boundary check to prevent the broken metallic/chrome person glitch
-        if rough is None: rough = 0.5
-        if metal is None: metal = 0.0
 
         self.matlines.append("\n")
         self.matlines.append("newmtl " + material.name + "\n")
-        
+
         # --- Pass direct unpacked floating point values into the templates ---
         self.matlines.append("Kd %.4f %.4f %.4f\n" % (d_r, d_g, d_b))
         self.matlines.append("Ks %.4f %.4f %.4f\n" % (s_r, s_g, s_b))
@@ -161,28 +154,27 @@ class objExport:
 
         # --- TEXTURE MAP CHANNELS  ---
         if hasattr(material, "aomapTexture") and material.aomapTexture:
-            if self.addImage("map_Ka", material.aomapTexture) is False: 
+            if self.addImage("map_Ka", material.aomapTexture) is False:
                 return False
 
         if hasattr(material, "diffuseTexture") and material.diffuseTexture:
             diffusename = material.saveDiffuse() if getattr(material, 'colorationMethod', 0) > 0 else material.diffuseTexture
-            if self.addImage("map_Kd", diffusename) is False: 
+            if self.addImage("map_Kd", diffusename) is False:
                 return False
 
         # Metallic Roughness Texture Splitting
         if hasattr(material, "metallicRoughnessTexture") and material.metallicRoughnessTexture:
-            if self.addImage("map_Pr -imfchan g", material.metallicRoughnessTexture) is False: 
+            if self.addImage("map_Pr -imfchan g", material.metallicRoughnessTexture) is False:
                 return False
             self.addImage("map_Pm -imfchan b", material.metallicRoughnessTexture, copy=False)
 
-        # Emissive Map Correction (Fixed typo that called specularmapTexture instead of emissiveTexture)
         if hasattr(material, "emissiveTexture") and material.emissiveTexture:
-            if self.addImage("map_Ke", material.emissiveTexture) is False: 
+            if self.addImage("map_Ke", material.emissiveTexture) is False:
                 return False
 
         # Normal Map Mapping Check
         if hasattr(material, "normalmapTexture") and material.normalmapTexture:
-            if self.addImage("map_Bump", material.normalmapTexture) is False: 
+            if self.addImage("map_Bump", material.normalmapTexture) is False:
                 return False
 
         return True
