@@ -38,5 +38,6 @@ Bugfixes:
 - saving model: use a different method for MHM file caching, since neither name nor uuid had to be changed.
   (this resulted in only one visible file)
 - eye-materials only in user folder, meshes in system folder (materials were not found)
+- proxy vs. basemesh. After changing material, materialeditor crashed
 - character info: when mesh was changed, character info window was messed up
 
