@@ -1,0 +1,10 @@
+{
+	"Gender": ["Male", "Female", "Unigender", "Creature" ],
+	"Era": ["Contemporary", "Future", "Past", "Post-Apocalyptic", "Prehistoric" ],
+	"Genre": ["Mythical", "Comic", "Fantasy", "Cyberpunk", "Vaporwave", "High Fantasy", "Sci-Fi", "Anime"],
+	"Type": ["Fairy", "Mermaid", "Furry", "Insect", "Wild-animal", "Pet", "Monstrous", "Bionic", "Anthropomorphic", "Undead", "Skeletal" ],
+	 "Shortcut": [
+                ["c:female.png", "gender:female", "Female characters"],
+                ["c:male.png", "gender:male", "Male characters"]
+	]
+}
