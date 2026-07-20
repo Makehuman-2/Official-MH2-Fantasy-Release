@@ -23,9 +23,9 @@ class AssetPack():
                 "mhpose", "meta", "bvh", "mhskel", "mhw", "obj_file", "file", "mhm" ]
 
     def titleToFileName(self, title):
-        fname = re.sub('[^a-z0-9 ]', '', title.lower()).strip()
+        fname = re.sub(r'[^a-z0-9 ]', '', title.lower()).strip()
         fname = fname.replace(" ", "_")
-        return re.sub('__+', '_', fname)
+        return re.sub(r'__+', '_', fname)
 
     def createMaterialsFolder(self, path):
         #
@@ -318,6 +318,13 @@ class AssetPack():
                     self.createFolder(destfolder, debugfunc)
 
                     destname = os.path.join(destfolder, name)
+
+                    self.copyFile(sourcename, destname, replace, debugfunc)
+
+                elif category == "themes":
+                    folder = os.path.join(dest, category)
+                    self.createFolder(folder, debugfunc)
+                    destname = os.path.join(folder, name)
 
                     self.copyFile(sourcename, destname, replace, debugfunc)
 
