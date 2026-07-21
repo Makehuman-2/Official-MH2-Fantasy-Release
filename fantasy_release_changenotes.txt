@@ -19,7 +19,8 @@ Quality of life improvements:
 - material-editor: mhmat file loader button, possibility to modify specular color
 - cache clearing button in preferences.
 - double clicking for selections
-- logwindow now uses a timer (can be switched off) to reload messages (when activated)
+- logwindow now uses a timer (can be switched off) to reload messages (when activated), this is available .deb package
+  (steam version cannot deal with parallel reload and will unfortunately crash)
 - sqllite reload (cached database) can be triggered from menu
 - file selector to make search easier when an asset-pack zip file is already downloaded
 - small changes for single asset download to allow more materials to be put in correct folder
@@ -31,7 +32,7 @@ Bugfixes:
 
 - normals for pbr shader corrected
 - avoid showing mesh bugs when loading character (it froze system)
-- obj exporter now should not do artifacts, fixed specular vs. emission
+- obj exporter now should not do artifacts, fixed specular vs. emission, it also allows materials of same name
 - gltf, mh2b should work with corrections
 - changed behaviour to use mhpose file similar as bvh file (correction of bones, using it in renderer etc)
 - ability to correct bones in animation NOT used in bvh files
