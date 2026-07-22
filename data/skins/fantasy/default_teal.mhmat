@@ -1,0 +1,27 @@
+# MakeHuman2 Material definition for default
+name default
+description default material
+
+ambientColor 1.0 1.0 1.0
+diffuseColor 0.4471 0.6235 0.8118
+specularColor 0.5 0.5 0.5
+emissiveColor 0.0 0.0 0.0
+metallicFactor 0.08
+roughnessFactor 0.92
+
+transparent False
+alphaToCoverage False
+backfaceCull False
+
+diffuseTexture fantasy_unigender_default.png
+normalmapTexture fantasy_unigender_def_normals.png
+normalmapIntensity 0.08
+aomapTexture fantasy_unigender_def_ao.png
+aomapIntensity 1.76
+colorationMethod 1
+colorationColor  0.7725 0.9765 1.0
+
+
+shader pbr
+
+
