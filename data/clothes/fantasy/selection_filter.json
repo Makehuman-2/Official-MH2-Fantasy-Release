@@ -48,7 +48,7 @@
 		["m_shoe.png", "slot:feet&gender-age:male|slot:feet&gender-age:unisex-adult", "Shoes (male)"],
 		["uniform.png", "slot:top-torso:layer3:uniform", "Uniform"],
 		["handheld.png", "slot:hands:carried", "Carried objects"],
-		["u:horns.png", "slot:extra:horns", "Horns"],
+		["horns.png", "slot:extra:horns", "Horns"],
 		["wing.png", "slot:extra:wings", "Wings"]
 	]
 }
